@@ -564,21 +564,29 @@ public:
         case null_node:
             if (0 < (string_.length())) {
                 LOGGER_IS_LOGGED_INFO("...literal " << string_.chars());
-                //string_.append_to(to);
+                switch(type_) {
+
+                case number_node:
+                    to.on_number_node(*this);
+                    break;
+                case boolean_node:
+                    to.on_boolean_node(*this);
+                    break;
+                case null_node:
+                    to.on_null_node(*this);
+                    break;
+
+                default:                    
+                    LOGGER_IS_LOGGED_ERROR("...unexpected type = " << type_);
+                }
             } else {
                 LOGGER_IS_LOGGED_ERROR("...unexpected empty literal");
             }
             break;
     
         case string_node:
-            if (0 < (string_.length())) {
-                LOGGER_IS_LOGGED_INFO("...literal \"" << string_.chars() << "\"");
-                //string_.append_literal_to(to);
-            } else {
-                //to.append("\"");
-                //to.append("\"");
-                LOGGER_IS_LOGGED_INFO("...literal \"\"");
-            }
+            LOGGER_IS_LOGGED_INFO("...literal \"" << string_.chars() << "\"");
+            to.on_string_node(*this);
             break;
     
         case named_node:
@@ -589,27 +597,33 @@ public:
     
                 if (named_node != (type_)) {
                     LOGGER_IS_LOGGED_INFO(((array_node != (type_))?("object {"):("array [")) << "...");
-                    //to.append((array_node != (type_))?("{"):("["));
+                    if (array_node != (type_)) {
+                        to.on_begin_object_node(*this);
+                    } else {
+                        to.on_begin_array_node(*this);
+                    }
                     for (node_list::const_iterator i = b; i != e; ++i) {
                         const node& v = *i;
                         if ((i != b)) {
-                            //to.append(",");
                         }
                         LOGGER_IS_LOGGED_DEBUG("v.to(to)...");
                         v.to(to);
                         LOGGER_IS_LOGGED_DEBUG("...v.to(to)");
                     }
-                    //to.append((array_node != (type_))?("}"):("]"));
+                    if (array_node != (type_)) {
+                        to.on_end_object_node(*this);
+                    } else {
+                        to.on_end_array_node(*this);
+                    }
                     LOGGER_IS_LOGGED_INFO("..." << ((array_node != (type_))?("} object"):("] array")));
                 } else {
                     const node& v = *b;
-                    //to.append("\"");
-                    //to.append(string_);
-                    //to.append("\":");
                     LOGGER_IS_LOGGED_INFO("...named \"" << string_.chars() << "\":");
+                    to.on_begin_named_node(*this);
                     LOGGER_IS_LOGGED_DEBUG("v.to(to)...");
                     v.to(to);
                     LOGGER_IS_LOGGED_DEBUG("...v.to(to)");
+                    to.on_end_named_node(*this);
                 }
             } else {
                 LOGGER_IS_LOGGED_ERROR("...unexpected empty values");
@@ -623,6 +637,20 @@ public:
         return to;
     }
 
+    /// ...get...
+    virtual const node_type& get_type() const {
+        return type_;
+    }
+    virtual const string& get_string() const {
+        return string_;
+    }
+    virtual const number& get_number() const {
+        return number_;
+    }
+    virtual const boolean& get_boolean() const {
+        return boolean_;
+    }
+    
 protected:
     /// find
     virtual const node* find(const string& name) const {
@@ -647,10 +675,10 @@ protected:
      boolean boolean_;
      node_list values_;
 }; /// class node
-typedef json::node::node_events_t node_events;
+typedef node::node_events node_events;
 
 namespace extended {
-typedef json::extended::node_eventst<json::node, json::node_events> node_events;
+typedef json::extended::node_eventst<json::node, json::node::node_events>  node_events;
 } /// namespace extended
 
 } /// namespace json

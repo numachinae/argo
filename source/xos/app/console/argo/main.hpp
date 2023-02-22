@@ -32,10 +32,11 @@ namespace argo {
 
 /// class maint
 template 
-<class TExtends = xos::app::console::argo::main_opt, 
+<class TEvents = io::format::json::node_events,
+ class TExtends = xos::app::console::argo::main_opt, 
  class TImplements = typename TExtends::implements>
 
-class exported maint: virtual public TImplements, public TExtends {
+class exported maint: virtual public TEvents, virtual public TImplements, public TExtends {
 public:
     typedef TImplements implements;
     typedef TExtends extends;
@@ -52,6 +53,7 @@ public:
     /// constructor / destructor
     maint()
     : run_(0),
+      json_events_(*this),
       json_string_("{\"object\": \"method\", \"arguments\": [{\"argument\": 1},{\"argument\": 2},{\"argument\": \"...\"}]}"), 
       json_arg_(json_string_.has_chars()) {
     }
@@ -135,9 +137,25 @@ protected:
     /// ...output_json...
     virtual int default_output_json_node_run(const io::format::json::node& node, int argc, char_t** argv, char_t** env) {
         int err = 0;
+        io::format::json::node_events& events = this->json_events();
+
+        LOGGER_IS_LOGGED_INFO("events.on_begin_root_node(node)...");
+        events.on_begin_root_node(node);
+        LOGGER_IS_LOGGED_INFO("node.to(events)...");
+        node.to(events);
+        LOGGER_IS_LOGGED_INFO("...node.to(events)");
+        events.on_end_root_node(node);
+        LOGGER_IS_LOGGED_INFO("events.on_end_root_node(node)...");
+        return err;
+    }
+    virtual int string_output_json_node_run(const io::format::json::node& node, int argc, char_t** argv, char_t** env) {
+        int err = 0;
         io::format::json::string_t& string = this->json_string();
         const io::format::json::char_t* chars = 0;
+
+        LOGGER_IS_LOGGED_INFO("node.to(string)...");
         node.to(string);
+        LOGGER_IS_LOGGED_INFO("...node.to(string)");
         if ((chars = string.has_chars())) {
             this->outlln("json = \"", chars, "\"", null);
         }
@@ -176,6 +194,11 @@ protected:
         return err;
     }
 
+    /// ...json_events
+    virtual io::format::json::node_events& json_events() const {
+        return (io::format::json::node_events&) json_events_;
+    }
+
     /// ...json_string
     virtual io::format::json::string_t& set_json_string(io::format::json::string_t& to) {
         io::format::json::string_t& json_string = this->json_string();
@@ -197,6 +220,7 @@ protected:
     }
 
 protected:
+    io::format::json::extended::node_events json_events_;
     io::format::json::string_t json_string_;
     const char_t* json_arg_;
 }; /// class maint
