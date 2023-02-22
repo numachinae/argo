@@ -503,3 +503,7 @@ argo_LIBS += \
 -L$${ARGO_LIB}/lib$${ARGO_NAME} \
 -l$${ARGO_NAME} \
 
+# argo pigpio LIBS
+#
+argo_pigpio_LIBS += \
+$${argo_LIBS} \

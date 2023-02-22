@@ -261,9 +261,40 @@ argo_INCLUDEPATH += \
 #
 argo_DEFINES += \
 
-# argo LIBS
+# argo os LIBS
 #
-argo_LIBS += \
+contains(ARGO_OS,macosx|linux) {
+argo_os_LIBS += \
+-lpthread \
+-ldl
+} else {
+} # contains(ARGO_OS,macosx|linux)
+
+contains(ARGO_OS,linux) {
+argo_os_LIBS += \
+-lrt
+} else {
+} # contains(ARGO_OS,linux)
+
+# argo os_pigpio LIBS
+#
+contains(ARGO_OS,macosx) {
+argo_os_pigpio_LIBS += \
+-L$${ARGO_LIB}/libpigpio 
+} else {
+} # contains(ARGO_OS,macosx)
+
+# argo os_pigpio LIBS
+#
+contains(ARGO_OS,macosx|linux) {
+argo_os_pigpio_LIBS += \
+-lpigpio 
+} else {
+} # contains(ARGO_OS,macosx|linux)
+
+# argo base LIBS
+#
+argo_base_LIBS += \
 $${stara_LIBS} \
 $${rete_LIBS} \
 $${cifra_LIBS} \
@@ -272,19 +303,18 @@ $${fila_LIBS} \
 $${nadir_LIBS} \
 $${rostra_LIBS} \
 $${libjson_LIBS} \
+
+# argo LIBS
+#
+argo_LIBS += \
+$${argo_base_LIBS} \
 $${build_argo_LIBS} \
+$${argo_os_LIBS} \
 
-contains(ARGO_OS,macosx|linux) {
-argo_LIBS += \
--lpthread \
--ldl
-} else {
-} # contains(ARGO_OS,macosx|linux)
-
-contains(ARGO_OS,linux) {
-argo_LIBS += \
--lrt
-} else {
-} # contains(ARGO_OS,linux)
-
-
+# argo pigpio LIBS
+#
+argo_pigpio_LIBS += \
+$${argo_base_LIBS} \
+$${build_argo_LIBS} \
+$${argo_os_pigpio_LIBS} \
+$${argo_os_LIBS} \
