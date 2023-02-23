@@ -58,7 +58,9 @@ public:
       json_events_(*this), 
       pigpio_("pigpio"), 
       gpioRead_("gpioRead"), gpioWrite_("gpioWrite"), 
-      gpio_("gpio"), level_("level") {
+      gpio_("gpio"), level_("level"), unknown_("unknown"),
+      pigpio_gpio_begin_("{\"pigpio\":{\"gpioLevel\":{\"gpio\":\""), 
+      pigpio_level_begin_("\"},{\"level\":\""), pigpio_level_end_("\"}}}") {
     }
     virtual ~maint() {
     }
@@ -161,6 +163,35 @@ protected:
         after_prepare_response_to_json_request_run_ = &derives::set_pio_pin_value_after_prepare_response_to_json_request_run;
         return err;
     }
+    virtual int get_pio_pin_value_after_prepare_response_to_json_request_run
+    (string_t& response, const io::format::json::node& request_node, int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        if (!(err = this->all_get_pio_pin_value_run(argc, argv, env))) {
+            const string_t& pigpio_gpio_begin = this->pigpio_gpio_begin();
+            const string_t& pigpio_level_begin = this->pigpio_level_begin();
+            const string_t& pigpio_level_end = this->pigpio_level_end();
+            unsigned pio_pin_number = this->pio_pin(), 
+                     pio_pin_value = this->pio_value();
+            const unsigned_to_string pio_pin_number_string(pio_pin_number);
+            const string_t pio_pin_value_string
+                           ((((uint8_t)-1) != pio_pin_value)
+                            ?(unsigned_to_string(pio_pin_value))
+                            :(this->unknown()));
+
+            response.assign(pigpio_gpio_begin);
+            response.append(pio_pin_number_string);
+            response.append(pigpio_level_begin);
+            response.append(pio_pin_value_string);
+            response.append(pigpio_level_end);
+        } else {
+        }
+        return err;
+    }
+    virtual int set_get_pio_pin_value_after_prepare_response_to_json_request_run(const io::format::json::node& request_node) {
+        int err = 0;
+        after_prepare_response_to_json_request_run_ = &derives::get_pio_pin_value_after_prepare_response_to_json_request_run;
+        return err;
+    }
     virtual int all_prepare_response_to_json_request_run
     (string_t& response, const io::format::json::node& request_node, int argc, char_t** argv, char_t** env) {
         int err = 0;
@@ -201,7 +232,7 @@ protected:
         return (io::format::json::node_events&) json_events_;
     }
 
-    /// ...on...    
+    /// ...on...root...    
     virtual io::format::json::node_events& on_begin_root_node(const io::format::json::node& node) {
         io::format::json::node_events* forwarded_to = 0;
         LOGGER_IS_LOGGED_INFO("in...");
@@ -226,6 +257,8 @@ protected:
         LOGGER_IS_LOGGED_INFO("out...");
         return *this;
     }
+    
+    /// ...on...named...    
     int (derives::*on_begin_named_node_)(const io::format::json::node& node);
     virtual io::format::json::node_events& on_begin_named_node(const io::format::json::node& node) {
         io::format::json::node_events* forwarded_to = 0;
@@ -242,6 +275,29 @@ protected:
                 }
             } else {
                 if (!(err = default_on_begin_named_node(node))) {
+                } else {
+                }
+            }
+        }
+        LOGGER_IS_LOGGED_INFO("out...");
+        return *this;
+    }
+    int (derives::*on_end_named_node_)(const io::format::json::node& node);
+    virtual io::format::json::node_events& on_end_named_node(const io::format::json::node& node) {
+        io::format::json::node_events* forwarded_to = 0;
+        LOGGER_IS_LOGGED_INFO("in...");
+        if ((forwarded_to = this->forwarded_to(this))) {
+            LOGGER_IS_LOGGED_INFO("forwarded_to->on_end_named_node(node)...");
+            forwarded_to->on_end_named_node(node);
+            LOGGER_IS_LOGGED_INFO("...forwarded_to->on_end_named_node(node)");
+        } else {
+            int err = 0;
+            if (on_end_named_node_) {
+                if (!(err = (this->*on_end_named_node_)(node))) {
+                } else {
+                }
+            } else {
+                if (!(err = default_on_end_named_node(node))) {
                 } else {
                 }
             }
@@ -267,11 +323,22 @@ protected:
         }
         return err;
     }
+    virtual int default_on_end_named_node(const io::format::json::node& node) {
+        int err = 0;
+        return err;
+    }
     virtual int unset_on_begin_named_node(const io::format::json::node& node) {
         int err = 0;
         on_begin_named_node_ = 0;
         return err;
     }
+    virtual int unset_on_end_named_node(const io::format::json::node& node) {
+        int err = 0;
+        on_end_named_node_ = 0;
+        return err;
+    }
+
+    /// ...pigpio_named...
     virtual int on_begin_pigpio_named_node(const io::format::json::node& node) {
         int err = 0;
         int unequal = 0;
@@ -287,6 +354,38 @@ protected:
                 if (!(err = set_on_end_gpioWrite_named_node(node))) {
                 }
             }
+        } else {
+            const string_t& gpioRead = this->gpioRead();
+    
+            LOGGER_IS_LOGGED_INFO("!(unequal = gpioRead.compare(node_string = \"" << node_string << "\"))...");
+            if (!(unequal = gpioRead.compare(node_string))) {
+                LOGGER_IS_LOGGED_INFO("...!(unequal = gpioRead.compare(node_string = \"" << node_string << "\"))");
+                LOGGER_IS_LOGGED_INFO("set_on_begin_gpioRead_named_node(node)...");
+                if (!(err = set_on_begin_gpioRead_named_node(node))) {
+                    LOGGER_IS_LOGGED_INFO("set_on_end_gpioRead_named_node(node...");
+                    if (!(err = set_on_end_gpioRead_named_node(node))) {
+                    }
+                }
+            } else {
+            }
+        }
+        return err;
+    }
+    virtual int on_end_pigpio_named_node(const io::format::json::node& node) {
+        int err = 0;
+        int unequal = 0;
+        const io::format::json::node::string_t node_string = node.get_string();
+        const string_t& pigpio = this->pigpio();
+
+        LOGGER_IS_LOGGED_INFO("!(unequal = pigpio.compare(node_string = \"" << node_string << "\"))...");
+        if (!(unequal = pigpio.compare(node_string))) {
+            LOGGER_IS_LOGGED_INFO("...!(unequal = pigpio.compare(node_string = \"" << node_string << "\"))");
+            LOGGER_IS_LOGGED_INFO("unset_on_end_named_node(node)...");
+            if (!(err = unset_on_end_named_node(node))) {
+                LOGGER_IS_LOGGED_INFO("unset_on_begin_named_node(node)...");
+                if (!(err = unset_on_begin_named_node(node))) {
+                }
+            }
         }
         return err;
     }
@@ -295,7 +394,39 @@ protected:
         on_begin_named_node_ = &derives::on_begin_pigpio_named_node;
         return err;
     }
+    virtual int set_on_end_pigpio_named_node(const io::format::json::node& node) {
+        int err = 0;
+        on_end_named_node_ = &derives::on_end_pigpio_named_node;
+        return err;
+    }
+
+    /// ...gpioRead_named...
     virtual int on_begin_gpioRead_named_node(const io::format::json::node& node) {
+        int err = 0;
+        int unequal = 0;
+        const io::format::json::node::string_t node_string = node.get_string();
+        const string_t& gpio = this->gpio();
+
+        LOGGER_IS_LOGGED_INFO("!(unequal = gpio.compare(node_string = \"" << node_string << "\"))...");
+        if (!(unequal = gpio.compare(node_string))) {
+            LOGGER_IS_LOGGED_INFO("...!(unequal = gpio.compare(node_string = \"" << node_string << "\"))");
+            LOGGER_IS_LOGGED_INFO("set_on_begin_gpioRead_gpio_named_node(node)...");
+            if (!(err = set_on_begin_gpioRead_gpio_named_node(node))) {
+                LOGGER_IS_LOGGED_INFO("set_on_end_gpioRead_gpio_named_node(node)...");
+                if (!(err = set_on_end_gpioRead_gpio_named_node(node))) {
+                    LOGGER_IS_LOGGED_INFO("set_on_pio_pin_number_node(node)...");
+                    if (!(err = set_on_pio_pin_number_node(node))) {
+                        LOGGER_IS_LOGGED_INFO("sset_on_pio_pin_string_node(node)...");
+                        if (!(err = set_on_pio_pin_string_node(node))) {
+                        }
+                    }
+                }
+            }
+        } else {
+        }
+        return err;
+    }
+    virtual int on_end_gpioRead_named_node(const io::format::json::node& node) {
         int err = 0;
         return err;
     }
@@ -304,6 +435,13 @@ protected:
         on_begin_named_node_ = &derives::on_begin_gpioRead_named_node;
         return err;
     }
+    virtual int set_on_end_gpioRead_named_node(const io::format::json::node& node) {
+        int err = 0;
+        on_end_named_node_ = &derives::on_end_gpioRead_named_node;
+        return err;
+    }
+
+    /// ...gpioWrite_named...
     virtual int on_begin_gpioWrite_named_node(const io::format::json::node& node) {
         int err = 0;
         int unequal = 0;
@@ -349,95 +487,6 @@ protected:
         }
         return err;
     }
-    virtual int set_on_begin_gpioWrite_named_node(const io::format::json::node& node) {
-        int err = 0;
-        on_begin_named_node_ = &derives::on_begin_gpioWrite_named_node;
-        return err;
-    }
-    virtual int on_begin_gpioWrite_gpio_named_node(const io::format::json::node& node) {
-        int err = 0;
-        int unequal = 0;
-        return err;
-    }
-    virtual int set_on_begin_gpioWrite_gpio_named_node(const io::format::json::node& node) {
-        int err = 0;
-        on_begin_named_node_ = &derives::on_begin_gpioWrite_gpio_named_node;
-        return err;
-    }
-    virtual int on_begin_gpioWrite_level_named_node(const io::format::json::node& node) {
-        int err = 0;
-        int unequal = 0;
-        return err;
-    }
-    virtual int set_on_begin_gpioWrite_level_named_node(const io::format::json::node& node) {
-        int err = 0;
-        on_begin_named_node_ = &derives::on_begin_gpioWrite_level_named_node;
-        return err;
-    }
-    int (derives::*on_end_named_node_)(const io::format::json::node& node);
-    virtual io::format::json::node_events& on_end_named_node(const io::format::json::node& node) {
-        io::format::json::node_events* forwarded_to = 0;
-        LOGGER_IS_LOGGED_INFO("in...");
-        if ((forwarded_to = this->forwarded_to(this))) {
-            LOGGER_IS_LOGGED_INFO("forwarded_to->on_end_named_node(node)...");
-            forwarded_to->on_end_named_node(node);
-            LOGGER_IS_LOGGED_INFO("...forwarded_to->on_end_named_node(node)");
-        } else {
-            int err = 0;
-            if (on_end_named_node_) {
-                if (!(err = (this->*on_end_named_node_)(node))) {
-                } else {
-                }
-            } else {
-                if (!(err = default_on_end_named_node(node))) {
-                } else {
-                }
-            }
-        }
-        LOGGER_IS_LOGGED_INFO("out...");
-        return *this;
-    }
-    virtual int default_on_end_named_node(const io::format::json::node& node) {
-        int err = 0;
-        return err;
-    }
-    virtual int unset_on_end_named_node(const io::format::json::node& node) {
-        int err = 0;
-        on_end_named_node_ = 0;
-        return err;
-    }
-    virtual int on_end_pigpio_named_node(const io::format::json::node& node) {
-        int err = 0;
-        int unequal = 0;
-        const io::format::json::node::string_t node_string = node.get_string();
-        const string_t& pigpio = this->pigpio();
-
-        LOGGER_IS_LOGGED_INFO("!(unequal = pigpio.compare(node_string = \"" << node_string << "\"))...");
-        if (!(unequal = pigpio.compare(node_string))) {
-            LOGGER_IS_LOGGED_INFO("...!(unequal = pigpio.compare(node_string = \"" << node_string << "\"))");
-            LOGGER_IS_LOGGED_INFO("unset_on_end_named_node(node)...");
-            if (!(err = unset_on_end_named_node(node))) {
-                LOGGER_IS_LOGGED_INFO("unset_on_begin_named_node(node)...");
-                if (!(err = unset_on_begin_named_node(node))) {
-                }
-            }
-        }
-        return err;
-    }
-    virtual int set_on_end_pigpio_named_node(const io::format::json::node& node) {
-        int err = 0;
-        on_end_named_node_ = &derives::on_end_pigpio_named_node;
-        return err;
-    }
-    virtual int on_end_gpioRead_named_node(const io::format::json::node& node) {
-        int err = 0;
-        return err;
-    }
-    virtual int set_on_end_gpioRead_named_node(const io::format::json::node& node) {
-        int err = 0;
-        on_end_named_node_ = &derives::on_end_gpioRead_named_node;
-        return err;
-    }
     virtual int on_end_gpioWrite_named_node(const io::format::json::node& node) {
         int err = 0;
         int unequal = 0;
@@ -456,9 +505,66 @@ protected:
         }
         return err;
     }
+    virtual int set_on_begin_gpioWrite_named_node(const io::format::json::node& node) {
+        int err = 0;
+        on_begin_named_node_ = &derives::on_begin_gpioWrite_named_node;
+        return err;
+    }
     virtual int set_on_end_gpioWrite_named_node(const io::format::json::node& node) {
         int err = 0;
         on_end_named_node_ = &derives::on_end_gpioWrite_named_node;
+        return err;
+    }
+
+    /// ...gpioRead_gpio_named...
+    virtual int on_begin_gpioRead_gpio_named_node(const io::format::json::node& node) {
+        int err = 0;
+        int unequal = 0;
+        return err;
+    }
+    virtual int on_end_gpioRead_gpio_named_node(const io::format::json::node& node) {
+        int err = 0;
+        int unequal = 0;
+        const io::format::json::node::string_t node_string = node.get_string();
+        const string_t& gpio = this->gpio();
+
+        LOGGER_IS_LOGGED_INFO("!(unequal = gpio.compare(node_string = \"" << node_string << "\"))...");
+        if (!(unequal = gpio.compare(node_string))) {
+            LOGGER_IS_LOGGED_INFO("...!(unequal = gpio.compare(node_string = \"" << node_string << "\"))");
+            LOGGER_IS_LOGGED_INFO("set_on_end_gpioRead_named_node(node)...");
+            if (!(err = set_on_end_gpioRead_named_node(node))) {
+                LOGGER_IS_LOGGED_INFO("set_on_begin_gpioRead_named_node(node)...");
+                if (!(err = set_on_begin_gpioRead_named_node(node))) {
+                    LOGGER_IS_LOGGED_INFO("unset_on_number_node(node)...");
+                    if (!(err = unset_on_number_node(node))) {
+                        LOGGER_IS_LOGGED_INFO("unset_on_string_node(node)...");
+                        if (!(err = unset_on_string_node(node))) {
+                            LOGGER_IS_LOGGED_INFO("set_get_pio_pin_value_after_prepare_response_to_json_request_run(node)...");
+                            if (!(err = set_get_pio_pin_value_after_prepare_response_to_json_request_run(node))) {
+                            }
+                        }
+                    }
+                }
+            }
+        } else {
+        }
+        return err;
+    }
+    virtual int set_on_begin_gpioRead_gpio_named_node(const io::format::json::node& node) {
+        int err = 0;
+        on_begin_named_node_ = &derives::on_begin_gpioRead_gpio_named_node;
+        return err;
+    }
+    virtual int set_on_end_gpioRead_gpio_named_node(const io::format::json::node& node) {
+        int err = 0;
+        on_end_named_node_ = &derives::on_end_gpioRead_gpio_named_node;
+        return err;
+    }
+
+    /// ...gpioWrite_gpio_named...
+    virtual int on_begin_gpioWrite_gpio_named_node(const io::format::json::node& node) {
+        int err = 0;
+        int unequal = 0;
         return err;
     }
     virtual int on_end_gpioWrite_gpio_named_node(const io::format::json::node& node) {
@@ -486,9 +592,21 @@ protected:
         }
         return err;
     }
+    virtual int set_on_begin_gpioWrite_gpio_named_node(const io::format::json::node& node) {
+        int err = 0;
+        on_begin_named_node_ = &derives::on_begin_gpioWrite_gpio_named_node;
+        return err;
+    }
     virtual int set_on_end_gpioWrite_gpio_named_node(const io::format::json::node& node) {
         int err = 0;
         on_end_named_node_ = &derives::on_end_gpioWrite_gpio_named_node;
+        return err;
+    }
+
+    /// ...gpioWrite_level_named...
+    virtual int on_begin_gpioWrite_level_named_node(const io::format::json::node& node) {
+        int err = 0;
+        int unequal = 0;
         return err;
     }
     virtual int on_end_gpioWrite_level_named_node(const io::format::json::node& node) {
@@ -519,11 +637,18 @@ protected:
         }
         return err;
     }
+    virtual int set_on_begin_gpioWrite_level_named_node(const io::format::json::node& node) {
+        int err = 0;
+        on_begin_named_node_ = &derives::on_begin_gpioWrite_level_named_node;
+        return err;
+    }
     virtual int set_on_end_gpioWrite_level_named_node(const io::format::json::node& node) {
         int err = 0;
         on_end_named_node_ = &derives::on_end_gpioWrite_level_named_node;
         return err;
     }
+
+    /// ...on...object...    
     virtual io::format::json::node_events& on_begin_object_node(const io::format::json::node& node) {
         io::format::json::node_events* forwarded_to = 0;
         LOGGER_IS_LOGGED_INFO("in...");
@@ -548,6 +673,8 @@ protected:
         LOGGER_IS_LOGGED_INFO("out...");
         return *this;
     }
+
+    /// ...on...array...    
     virtual io::format::json::node_events& on_begin_array_node(const io::format::json::node& node) {
         io::format::json::node_events* forwarded_to = 0;
         LOGGER_IS_LOGGED_INFO("in...");
@@ -572,6 +699,8 @@ protected:
         LOGGER_IS_LOGGED_INFO("out...");
         return *this;
     }
+
+    /// ...on...string...    
     int (derives::*on_string_node_)(const io::format::json::node& node);
     virtual int default_on_string_node(const io::format::json::node& node) {
         int err = 0;
@@ -628,6 +757,8 @@ protected:
         LOGGER_IS_LOGGED_INFO("out...");
         return *this;
     }
+
+    /// ...on...number...    
     int (derives::*on_number_node_)(const io::format::json::node& node);
     virtual int default_on_number_node(const io::format::json::node& node) {
         int err = 0;
@@ -698,6 +829,8 @@ protected:
         LOGGER_IS_LOGGED_INFO("out...");
         return *this;
     }
+
+    /// ...on...boolean...    
     virtual io::format::json::node_events& on_boolean_node(const io::format::json::node& node) {
         io::format::json::node_events* forwarded_to = 0;
         LOGGER_IS_LOGGED_INFO("in...");
@@ -710,6 +843,8 @@ protected:
         LOGGER_IS_LOGGED_INFO("out...");
         return *this;
     }
+
+    /// ...on...null...    
     virtual io::format::json::node_events& on_null_node(const io::format::json::node& node) {
         io::format::json::node_events* forwarded_to = 0;
         LOGGER_IS_LOGGED_INFO("in...");
@@ -739,10 +874,23 @@ protected:
     virtual string_t& level() const {
         return (string_t&) level_;
     }
+    virtual string_t& unknown() const {
+        return (string_t&) unknown_;
+    }
+    virtual string_t& pigpio_gpio_begin() const {
+        return (string_t&) pigpio_gpio_begin_;
+    }
+    virtual string_t& pigpio_level_begin() const {
+        return (string_t&) pigpio_level_begin_;
+    }
+    virtual string_t& pigpio_level_end() const {
+        return (string_t&) pigpio_level_end_;
+    }
 
 protected:
     io::format::json::extended::node_events json_events_;
-    string_t pigpio_, gpioRead_, gpioWrite_, gpio_, level_;
+    string_t pigpio_, gpioRead_, gpioWrite_, gpio_, level_, unknown_, 
+             pigpio_gpio_begin_, pigpio_level_begin_, pigpio_level_end_;
 }; /// class maint 
 typedef maint<> main;
 
