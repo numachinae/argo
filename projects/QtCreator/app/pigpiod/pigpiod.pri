@@ -84,6 +84,13 @@ $${ARGO_SRC}/xos/app/console/protocol/perifra/control/client/main.hpp \
 $${ARGO_SRC}/xos/app/console/protocol/perifra/control/server/main_opt.hpp \
 $${ARGO_SRC}/xos/app/console/protocol/perifra/control/server/main.hpp \
 \
+$${ARGO_SRC}/xos/app/console/protocol/perifra/control/network/base/main_opt.hpp \
+$${ARGO_SRC}/xos/app/console/protocol/perifra/control/network/base/main.hpp \
+$${ARGO_SRC}/xos/app/console/protocol/perifra/control/network/client/main_opt.hpp \
+$${ARGO_SRC}/xos/app/console/protocol/perifra/control/network/client/main.hpp \
+$${ARGO_SRC}/xos/app/console/protocol/perifra/control/network/server/main_opt.hpp \
+$${ARGO_SRC}/xos/app/console/protocol/perifra/control/network/server/main.hpp \
+\
 $${ARGO_SRC}/xos/app/console/protocol/perifra/control/pio/base/main_opt.hpp \
 $${ARGO_SRC}/xos/app/console/protocol/perifra/control/pio/base/main.hpp \
 \
@@ -93,6 +100,13 @@ $${ARGO_SRC}/xos/app/console/protocol/perifra/control/pigpio/client/main_opt.hpp
 $${ARGO_SRC}/xos/app/console/protocol/perifra/control/pigpio/client/main.hpp \
 $${ARGO_SRC}/xos/app/console/protocol/perifra/control/pigpio/server/main_opt.hpp \
 $${ARGO_SRC}/xos/app/console/protocol/perifra/control/pigpio/server/main.hpp \
+\
+$${ARGO_SRC}/xos/app/console/protocol/perifra/control/pigpio/network/base/main_opt.hpp \
+$${ARGO_SRC}/xos/app/console/protocol/perifra/control/pigpio/network/base/main.hpp \
+$${ARGO_SRC}/xos/app/console/protocol/perifra/control/pigpio/network/client/main_opt.hpp \
+$${ARGO_SRC}/xos/app/console/protocol/perifra/control/pigpio/network/client/main.hpp \
+$${ARGO_SRC}/xos/app/console/protocol/perifra/control/pigpio/network/server/main_opt.hpp \
+$${ARGO_SRC}/xos/app/console/protocol/perifra/control/pigpio/network/server/main.hpp \
 
 # pigpiod SOURCES
 #
