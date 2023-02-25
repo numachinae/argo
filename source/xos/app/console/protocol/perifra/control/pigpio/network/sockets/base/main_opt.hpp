@@ -56,13 +56,18 @@
 #ifdef XOS_APP_CONSOLE_PROTOCOL_PERIFRA_CONTROL_PIGPIO_NETWORK_SOCKETS_CLIENT_MAIN_OPT_HPP
 ///
 /// ...
+/// #error client
 #define XOS_APP_CONSOLE_PROTOCOL_PERIFRA_CONTROL_PIGPIO_NETWORK_SOCKETS_BASE_MAIN_OPTIONS_CHARS \
    XOS_APP_CONSOLE_PROTOCOL_PERIFRA_CONTROL_PIGPIO_NETWORK_SOCKETS_BASE_MAIN_OPTIONS_CHARS_EXTEND \
+   XOS_APP_CONSOLE_PROTOCOL_PERIFRA_CONTROL_PIGPIO_NETWORK_CLIENT_MAIN_OPTIONS_CHARS_EXTEND \
+   XOS_APP_CONSOLE_PROTOCOL_PERIFRA_CONTROL_PIGPIO_CLIENT_MAIN_OPTIONS_CHARS_EXTEND \
    XOS_APP_CONSOLE_PROTOCOL_PERIFRA_CONTROL_CLIENT_MAIN_OPTIONS_CHARS_EXTEND \
    XOS_APP_CONSOLE_PROTOCOL_NETWORK_SOCKETS_CLIENT_MAIN_OPTIONS_CHARS \
 
 #define XOS_APP_CONSOLE_PROTOCOL_PERIFRA_CONTROL_PIGPIO_NETWORK_SOCKETS_BASE_MAIN_OPTIONS_OPTIONS \
    XOS_APP_CONSOLE_PROTOCOL_PERIFRA_CONTROL_PIGPIO_NETWORK_SOCKETS_BASE_MAIN_OPTIONS_OPTIONS_EXTEND \
+   XOS_APP_CONSOLE_PROTOCOL_PERIFRA_CONTROL_PIGPIO_NETWORK_CLIENT_MAIN_OPTIONS_OPTIONS_EXTEND \
+   XOS_APP_CONSOLE_PROTOCOL_PERIFRA_CONTROL_PIGPIO_CLIENT_MAIN_OPTIONS_OPTIONS_EXTEND \
    XOS_APP_CONSOLE_PROTOCOL_PERIFRA_CONTROL_CLIENT_MAIN_OPTIONS_OPTIONS_EXTEND \
    XOS_APP_CONSOLE_PROTOCOL_NETWORK_SOCKETS_CLIENT_MAIN_OPTIONS_OPTIONS \
 /// ...
@@ -120,10 +125,16 @@ template
  <xos::app::console::protocol::perifra::control::pigpio::network::base::main_optt
  <xos::app::console::protocol::network::sockets::base::maint
  <xos::app::console::protocol::network::sockets::base::main_optt
+ <xos::app::console::protocol::perifra::control::network::base::maint
+ <xos::app::console::protocol::perifra::control::network::base::main_optt
  <xos::app::console::protocol::network::base::maint
  <xos::app::console::protocol::network::base::main_optt
  <xos::app::console::protocol::perifra::control::pigpio::base::maint
- <xos::app::console::protocol::perifra::control::pigpio::base::main_optt<> > > > > > > >,  class TImplements = typename TExtends::implements>
+ <xos::app::console::protocol::perifra::control::pigpio::base::main_optt
+ <xos::app::console::protocol::perifra::control::base::maint
+ <xos::app::console::protocol::perifra::control::base::main_optt
+ <xos::app::console::protocol::base::maint
+ <xos::app::console::protocol::base::main_optt<> > > > > > > > > > > > > >,  class TImplements = typename TExtends::implements>
 
 class main_optt: virtual public TImplements, public TExtends {
 public:

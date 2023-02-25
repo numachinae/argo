@@ -64,12 +64,28 @@ template
  <xos::app::console::protocol::network::sockets::server::main_optt
  <xos::app::console::protocol::network::sockets::base::maint
  <xos::app::console::protocol::network::sockets::base::main_optt
+ <xos::app::console::protocol::perifra::control::network::server::maint
+ <xos::app::console::protocol::perifra::control::network::server::main_optt
+ <xos::app::console::protocol::perifra::control::network::base::maint
+ <xos::app::console::protocol::perifra::control::network::base::main_optt
  <xos::app::console::protocol::network::server::maint
  <xos::app::console::protocol::network::server::main_optt
  <xos::app::console::protocol::network::base::maint
  <xos::app::console::protocol::network::base::main_optt
  <xos::app::console::protocol::perifra::control::pigpio::server::maint
- <xos::app::console::protocol::perifra::control::pigpio::server::main_optt<> > > > > > > > > > > > > > > >,  class TImplements = typename TExtends::implements>
+ <xos::app::console::protocol::perifra::control::pigpio::server::main_optt
+ <xos::app::console::protocol::perifra::control::pigpio::base::maint
+ <xos::app::console::protocol::perifra::control::pigpio::base::main_optt
+ <xos::app::console::protocol::perifra::control::server::maint
+ <xos::app::console::protocol::perifra::control::server::main_optt
+ <xos::app::console::protocol::perifra::control::pio::base::maint
+ <xos::app::console::protocol::perifra::control::pio::base::main_optt
+ <xos::app::console::protocol::perifra::control::base::maint
+ <xos::app::console::protocol::perifra::control::base::main_optt
+ <xos::app::console::protocol::server::maint
+ <xos::app::console::protocol::server::main_optt
+ <xos::app::console::protocol::base::maint
+ <xos::app::console::protocol::base::main_optt<> > > > > > > > > > > > > > > > > > > > > > > > > > > > > > > >,  class TImplements = typename TExtends::implements>
 
 class main_optt: virtual public TImplements, public TExtends {
 public:

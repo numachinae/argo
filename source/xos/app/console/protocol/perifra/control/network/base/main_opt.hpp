@@ -21,28 +21,31 @@
 #ifndef XOS_APP_CONSOLE_PROTOCOL_PERIFRA_CONTROL_NETWORK_BASE_MAIN_OPT_HPP
 #define XOS_APP_CONSOLE_PROTOCOL_PERIFRA_CONTROL_NETWORK_BASE_MAIN_OPT_HPP
 
+#include "xos/app/console/protocol/perifra/control/client/main.hpp"
 #include "xos/app/console/protocol/perifra/control/server/main.hpp"
 #include "xos/app/console/protocol/perifra/control/base/main.hpp"
+#include "xos/app/console/protocol/network/client/main.hpp"
 #include "xos/app/console/protocol/network/server/main.hpp"
+#include "xos/app/console/protocol/network/base/main.hpp"
 
-#ifdef XOS_APP_CONSOLE_PROTOCOL_PERIFRA_CONTROL_NETWORKL_CLIENT_MAIN_OPT_HPP
+#ifdef XOS_APP_CONSOLE_PROTOCOL_PERIFRA_CONTROL_NETWORK_CLIENT_MAIN_OPT_HPP
 /// client
 /// ...
 /// ...
 /// client
-#else /// def XOS_APP_CONSOLE_PROTOCOL_PERIFRA_CONTROL_NETWORKL_CLIENT_MAIN_OPT_HPP
-#ifdef XOS_APP_CONSOLE_PROTOCOL_PERIFRA_CONTROL_NETWORKL_SERVER_MAIN_OPT_HPP
+#else /// def XOS_APP_CONSOLE_PROTOCOL_PERIFRA_CONTROL_NETWORK_CLIENT_MAIN_OPT_HPP
+#ifdef XOS_APP_CONSOLE_PROTOCOL_PERIFRA_CONTROL_NETWORK_SERVER_MAIN_OPT_HPP
 /// server
 /// ...
 /// ...
 /// server
-#else /// def XOS_APP_CONSOLE_PROTOCOL_PERIFRA_CONTROL_NETWORKL_SERVER_MAIN_OPT_HPP
+#else /// def XOS_APP_CONSOLE_PROTOCOL_PERIFRA_CONTROL_NETWORK_SERVER_MAIN_OPT_HPP
 /// base
 /// ...
 /// ...
 /// base
-#endif /// def XOS_APP_CONSOLE_PROTOCOL_PERIFRA_CONTROL_NETWORKL_SERVER_MAIN_OPT_HPP
-#endif /// def XOS_APP_CONSOLE_PROTOCOL_PERIFRA_CONTROL_NETWORKL_CLIENT_MAIN_OPT_HPP
+#endif /// def XOS_APP_CONSOLE_PROTOCOL_PERIFRA_CONTROL_NETWORK_SERVER_MAIN_OPT_HPP
+#endif /// def XOS_APP_CONSOLE_PROTOCOL_PERIFRA_CONTROL_NETWORK_CLIENT_MAIN_OPT_HPP
 
 ///////////////////////////////////////////////////////////////////////
 #define XOS_APP_CONSOLE_PROTOCOL_PERIFRA_CONTROL_NETWORK_BASE_MAIN_OPTIONS_CHARS_EXTEND \
@@ -50,20 +53,21 @@
 #define XOS_APP_CONSOLE_PROTOCOL_PERIFRA_CONTROL_NETWORK_BASE_MAIN_OPTIONS_OPTIONS_EXTEND \
 
 ///////////////////////////////////////////////////////////////////////
-#ifdef XOS_APP_CONSOLE_PROTOCOL_PERIFRA_CONTROL_NETWORKL_CLIENT_MAIN_OPT_HPP
+#ifdef XOS_APP_CONSOLE_PROTOCOL_PERIFRA_CONTROL_NETWORK_CLIENT_MAIN_OPT_HPP
 /// client
 /// ...
+/// #error client
 #define XOS_APP_CONSOLE_PROTOCOL_PERIFRA_CONTROL_NETWORK_BASE_MAIN_OPTIONS_CHARS \
    XOS_APP_CONSOLE_PROTOCOL_PERIFRA_CONTROL_NETWORK_BASE_MAIN_OPTIONS_CHARS_EXTEND \
-   XOS_APP_CONSOLE_PROTOCOL_PERIFRA_CONTROL_BASE_MAIN_OPTIONS_CHARS \
+   XOS_APP_CONSOLE_PROTOCOL_PERIFRA_CONTROL_CLIENT_MAIN_OPTIONS_CHARS \
 
 #define XOS_APP_CONSOLE_PROTOCOL_PERIFRA_CONTROL_NETWORK_BASE_MAIN_OPTIONS_OPTIONS \
    XOS_APP_CONSOLE_PROTOCOL_PERIFRA_CONTROL_NETWORK_BASE_MAIN_OPTIONS_OPTIONS_EXTEND \
-   XOS_APP_CONSOLE_PROTOCOL_PERIFRA_CONTROL_BASE_MAIN_OPTIONS_OPTIONS \
+   XOS_APP_CONSOLE_PROTOCOL_PERIFRA_CONTROL_CLIENT_MAIN_OPTIONS_OPTIONS \
 /// ...
 /// client
-#else /// def XOS_APP_CONSOLE_PROTOCOL_PERIFRA_CONTROL_NETWORKL_CLIENT_MAIN_OPT_HPP
-#ifdef XOS_APP_CONSOLE_PROTOCOL_PERIFRA_CONTROL_NETWORKL_SERVER_MAIN_OPT_HPP
+#else /// def XOS_APP_CONSOLE_PROTOCOL_PERIFRA_CONTROL_NETWORK_CLIENT_MAIN_OPT_HPP
+#ifdef XOS_APP_CONSOLE_PROTOCOL_PERIFRA_CONTROL_NETWORK_SERVER_MAIN_OPT_HPP
 /// server
 /// ...
 #define XOS_APP_CONSOLE_PROTOCOL_PERIFRA_CONTROL_NETWORK_BASE_MAIN_OPTIONS_CHARS \
@@ -75,7 +79,7 @@
    XOS_APP_CONSOLE_PROTOCOL_PERIFRA_CONTROL_SERVER_MAIN_OPTIONS_OPTIONS \
 /// ...
 /// server
-#else /// def XOS_APP_CONSOLE_PROTOCOL_PERIFRA_CONTROL_NETWORKL_SERVER_MAIN_OPT_HPP
+#else /// def XOS_APP_CONSOLE_PROTOCOL_PERIFRA_CONTROL_NETWORK_SERVER_MAIN_OPT_HPP
 /// base
 /// ...
 #define XOS_APP_CONSOLE_PROTOCOL_PERIFRA_CONTROL_NETWORK_BASE_MAIN_OPTIONS_CHARS \
@@ -87,8 +91,8 @@
    XOS_APP_CONSOLE_PROTOCOL_PERIFRA_CONTROL_BASE_MAIN_OPTIONS_OPTIONS \
 /// ...
 /// base
-#endif /// def XOS_APP_CONSOLE_PROTOCOL_PERIFRA_CONTROL_NETWORKL_SERVER_MAIN_OPT_HPP
-#endif /// def XOS_APP_CONSOLE_PROTOCOL_PERIFRA_CONTROL_NETWORKL_CLIENT_MAIN_OPT_HPP
+#endif /// def XOS_APP_CONSOLE_PROTOCOL_PERIFRA_CONTROL_NETWORK_SERVER_MAIN_OPT_HPP
+#endif /// def XOS_APP_CONSOLE_PROTOCOL_PERIFRA_CONTROL_NETWORK_CLIENT_MAIN_OPT_HPP
 
 ///////////////////////////////////////////////////////////////////////
 #define XOS_APP_CONSOLE_PROTOCOL_PERIFRA_CONTROL_NETWORK_BASE_MAIN_ARGS 0
@@ -105,7 +109,12 @@ namespace base {
 
 /// class main_optt
 template 
-<class TExtends = xos::app::console::protocol::perifra::control::base::maint<>,  class TImplements = typename TExtends::implements>
+<class TExtends = xos::app::console::protocol::perifra::control::base::maint
+ <xos::app::console::protocol::perifra::control::base::main_optt
+ <xos::app::console::protocol::network::base::maint
+ <xos::app::console::protocol::network::base::main_optt
+ <xos::app::console::protocol::base::maint
+ <xos::app::console::protocol::base::main_optt<> > > > > >,  class TImplements = typename TExtends::implements>
 
 class main_optt: virtual public TImplements, public TExtends {
 public:

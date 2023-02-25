@@ -52,7 +52,20 @@ namespace client {
 
 /// class main_optt
 template 
-<class TExtends = xos::app::console::protocol::perifra::control::network::base::maint<>,  class TImplements = typename TExtends::implements>
+<class TExtends = xos::app::console::protocol::perifra::control::network::base::maint
+ <xos::app::console::protocol::perifra::control::network::base::main_optt
+ <xos::app::console::protocol::perifra::control::client::maint
+ <xos::app::console::protocol::perifra::control::client::main_optt
+ <xos::app::console::protocol::perifra::control::base::maint
+ <xos::app::console::protocol::perifra::control::base::main_optt
+ <xos::app::console::protocol::network::client::maint
+ <xos::app::console::protocol::network::client::main_optt
+ <xos::app::console::protocol::network::base::maint
+ <xos::app::console::protocol::network::base::main_optt
+ <xos::app::console::protocol::client::maint
+ <xos::app::console::protocol::client::main_optt
+ <xos::app::console::protocol::base::maint
+ <xos::app::console::protocol::base::main_optt<> > > > > > > > > > > > > >,  class TImplements = typename TExtends::implements>
 
 class main_optt: virtual public TImplements, public TExtends {
 public:
