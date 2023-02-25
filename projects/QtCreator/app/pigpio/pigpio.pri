@@ -13,49 +13,48 @@
 # or otherwise) arising in any way out of the use of this software,
 # even if advised of the possibility of such damage.
 #
-#   File: pigpiod.pri
+#   File: pigpio.pri
 #
 # Author: $author$
-#   Date: 2/21/2023
+#   Date: 2/25/2023
 #
-# generic QtCreator project file for numachinae framework argo executable pigpiod
+# generic QtCreator project file for numachinae framework argo executable pigpio
 ########################################################################
 
 ########################################################################
-# pigpiod
+# pigpio
 
-# pigpiod TARGET
+# pigpio TARGET
 #
-pigpiod_TARGET = pigpiod
+pigpio_TARGET = pigpio
 
-# pigpiod INCLUDEPATH
+# pigpio INCLUDEPATH
 #
-pigpiod_INCLUDEPATH += \
+pigpio_INCLUDEPATH += \
 $${argo_INCLUDEPATH} \
 
-# pigpiod DEFINES
+# pigpio DEFINES
 #
-pigpiod_DEFINES += \
+pigpio_DEFINES += \
 $${argo_DEFINES} \
 DEFAULT_LOGGING_LEVELS_ERROR \
 XOS_CONSOLE_MAIN_MAIN \
-RASPBERRYPIOS \
 
 ########################################################################
-# pigpiod OBJECTIVE_HEADERS
+# pigpio OBJECTIVE_HEADERS
 #
-#pigpiod_OBJECTIVE_HEADERS += \
+#pigpio_OBJECTIVE_HEADERS += \
 #$${ARGO_SRC}/xos/app/console/protocol/perifra/control/pigpio/base/main.hh \
 
-# pigpiod OBJECTIVE_SOURCES
+# pigpio OBJECTIVE_SOURCES
 #
-#pigpiod_OBJECTIVE_SOURCES += \
+#pigpio_OBJECTIVE_SOURCES += \
 #$${ARGO_SRC}/xos/app/console/protocol/perifra/control/pigpio/base/main.mm \
 
 ########################################################################
-# pigpiod HEADERS
+# pigpio HEADERS
 #
-pigpiod_HEADERS += \
+pigpio_HEADERS += \
 $${NADIR_SRC}/xos/app/console/protocol/base/main_opt.hpp \
 $${NADIR_SRC}/xos/app/console/protocol/base/main.hpp \
 $${NADIR_SRC}/xos/app/console/protocol/client/main_opt.hpp \
@@ -115,22 +114,22 @@ $${ARGO_SRC}/xos/app/console/protocol/perifra/control/pigpio/network/sockets/cli
 $${ARGO_SRC}/xos/app/console/protocol/perifra/control/pigpio/network/sockets/server/main_opt.hpp \
 $${ARGO_SRC}/xos/app/console/protocol/perifra/control/pigpio/network/sockets/server/main.hpp \
 
-# pigpiod SOURCES
+# pigpio SOURCES
 #
-pigpiod_SOURCES += \
-$${ARGO_SRC}/xos/app/console/protocol/perifra/control/pigpio/network/sockets/server/main_opt.cpp \
-$${ARGO_SRC}/xos/app/console/protocol/perifra/control/pigpio/network/sockets/server/main.cpp \
+pigpio_SOURCES += \
+$${ARGO_SRC}/xos/app/console/protocol/perifra/control/pigpio/network/sockets/client/main_opt.cpp \
+$${ARGO_SRC}/xos/app/console/protocol/perifra/control/pigpio/network/sockets/client/main.cpp \
 
 ########################################################################
-# pigpiod FRAMEWORKS
+# pigpio FRAMEWORKS
 #
-pigpiod_FRAMEWORKS += \
-$${argo_pigpio_FRAMEWORKS} \
+pigpio_FRAMEWORKS += \
+$${argo_FRAMEWORKS} \
 
-# pigpiod LIBS
+# pigpio LIBS
 #
-pigpiod_LIBS += \
-$${argo_pigpio_LIBS} \
+pigpio_LIBS += \
+$${argo_LIBS} \
 
 ########################################################################
 # NO Qt
